@@ -1,0 +1,219 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgmain"
+    tools:context="com.co2mpare.SettingsActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/buttonsv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="17dp"
+            android:background="@drawable/btnbg"
+            android:text="Save changes"
+            android:textColor="#009900"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/buttonsv" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/linearLayout2"
+            android:layout_below="@+id/register"
+            android:layout_marginTop="89dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/register"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="56dp"
+            android:text="General settings"
+            android:textColor="#666666"
+            android:textSize="30sp" />
+
+        <CheckBox
+            android:id="@+id/cbdisablecar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView2"
+            android:layout_marginLeft="33dp"
+            android:text="disable car"
+            android:textColor="#666666" />
+
+        <CheckBox
+            android:id="@+id/cbdisablepublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/cbdisablecar"
+            android:layout_marginLeft="33dp"
+            android:text="disable public vehicles"
+            android:textColor="#666666" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/cbdisablebike"
+            android:layout_below="@+id/textView3" />
+
+        <CheckBox
+            android:id="@+id/cbdisablebike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/cbdisablepublic"
+            android:layout_below="@+id/cbdisablepublic"
+            android:text="disable bike"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/spinner1"
+            android:layout_below="@+id/cbdisablebike"
+            android:layout_marginTop="18dp"
+            android:text="Select your car"
+            android:textColor="#666666"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/spinner1"
+            android:layout_below="@+id/textView4"
+            android:ems="10"
+            android:hint="average fuel consumption"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/co2cons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/spinner1"
+            android:layout_below="@+id/from"
+            android:ems="10"
+            android:hint="average co2 emission"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/fctv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/spinner1"
+            android:layout_below="@+id/spinner1"
+            android:layout_marginTop="12dp"
+            android:text="Fuelconsumption:"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/cotv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/fctv"
+            android:layout_alignBottom="@+id/fctv"
+            android:layout_toRightOf="@+id/textView3"
+            android:text="CO2-Emission"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/from"
+            android:layout_alignBottom="@+id/from"
+            android:layout_toRightOf="@+id/textView2"
+            android:text="l/100 km"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/co2cons"
+            android:layout_alignLeft="@+id/textView5"
+            android:text="CO2 g/km"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/fctv"
+            android:layout_alignBottom="@+id/fctv"
+            android:layout_toRightOf="@+id/fctv"
+            android:text=" l/100 km"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/cotv"
+            android:layout_alignBottom="@+id/cotv"
+            android:layout_toRightOf="@+id/cotv"
+            android:text=" g/km"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/from"
+            android:layout_below="@+id/fctv"
+            android:layout_marginTop="13dp"
+            android:text="Or enter your own:"
+            android:textColor="#666666"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/homeadd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/co2cons"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:ems="10"
+            android:gravity="center_vertical|center_horizontal"
+            android:hint="Where is your home?"
+            android:inputType="textMultiLine" >
+
+            <requestFocus />
+        </EditText>
+
+    </RelativeLayout>
+
+</FrameLayout>
