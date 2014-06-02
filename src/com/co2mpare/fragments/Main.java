@@ -1,13 +1,5 @@
 package com.co2mpare.fragments;
 
-import code.Controller;
-import code.LatLng;
-import code.SettingsObject;
-import com.co2mpare.R;
-import com.co2mpare.MainActivity;
-import com.co2mpare.MainActivity.PlaceholderFragment;
-import com.co2mpare.SettingsActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,10 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -29,15 +18,21 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+import code.Controller;
+import code.LatLng;
+import code.SettingsObject;
+
+import com.co2mpare.MainActivity;
+import com.co2mpare.R;
+import com.co2mpare.SettingsActivity;
 
 
 
 
 public class Main extends Fragment implements LocationListener{
 	
-	private static final String ARG_SECTION_NUMBER = "section_number";
+	private static final String ARG_SECTION_NUMBER = "section_number3";
 	
 	ImageView gear,gps,favbtn,homebtn;
 	static EditText fr,to;
@@ -45,6 +40,7 @@ public class Main extends Fragment implements LocationListener{
 	LatLng loc;
 	SettingsObject settings=SettingsObject.getInstance();
 	Controller controller=Controller.getInstance();
+	
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -69,6 +65,7 @@ public class Main extends Fragment implements LocationListener{
 		settings.retrieveFromStorage(getActivity());
 		
 		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+		
 		
 		gear=(ImageView)rootView.findViewById(R.id.imageView2);
 		gps=(ImageView)rootView.findViewById(R.id.gpsbtn);
@@ -135,7 +132,7 @@ public class Main extends Fragment implements LocationListener{
 					String[] favroutes=new String[settings.getSizeOfFavRoutes()];
 					
 					//Stringarray für die Dialog-Liste
-					for(int i=0;i<settings.getSizeOfFavRoutes()-1;i++){
+					for(int i=0;i<settings.getSizeOfFavRoutes();i++){
 						favroutes[i]="From: "+settings.getStartPosOfFavRoutes(i)+", To: "+settings.getDestOfFavRoutes(i);
 					}
 					
@@ -148,7 +145,7 @@ public class Main extends Fragment implements LocationListener{
 			            	to.setText(settings.getDestOfFavRoutes(which));
 			            	MainActivity.fromto[1]=to.getText().toString();
 			            	MainActivity.fromto[0]=fr.getText().toString();
-			                controller.createURL(MainActivity.fromto[0], MainActivity.fromto[2]);
+			                //controller.createURL(MainActivity.fromto[0], MainActivity.fromto[1]);
 			            }
 			        });
 				   builder.create();
@@ -167,7 +164,7 @@ public class Main extends Fragment implements LocationListener{
 			@Override
 			public void onClick(View v) {
 				getLocation();
-				
+				MainActivity.fromto[0]="GPSLOC";
 			}
 			
 		});
@@ -182,6 +179,8 @@ public class Main extends Fragment implements LocationListener{
 				}else{
 					getLocation();
 					to.setText(settings.getMyHome());
+					MainActivity.fromto[0]="GPSLOC";
+					MainActivity.fromto[1]=settings.getMyHome();
 				}
 				
 			}
@@ -195,9 +194,8 @@ public class Main extends Fragment implements LocationListener{
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), SettingsActivity.class);
-			   
 			    startActivity(intent);
-
+			
 			}
 			
 		});
@@ -223,26 +221,22 @@ public class Main extends Fragment implements LocationListener{
 	public void getLocation(){
 		Toast.makeText(getActivity(), "Retrieving GPS-Location - please wait", Toast.LENGTH_LONG).show();
 		locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER,30, 10, this);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30, 10, this);
         
-        /********* After registration onLocationChanged method  ********/
-        		
+        /********* After registration onLocationChanged method  ********/   		
     }
      
     @Override
     public void onLocationChanged(Location location) {
-            
         String str = location.getLatitude()+" "+location.getLongitude();
-        this.fr.setText(str);
         loc=new LatLng(location.getLatitude(),location.getLongitude());
         MainActivity.loc=loc;
         locationManager.removeUpdates(this);
+        this.fr.setText("Your current position");
     }
  
     @Override
     public void onProviderDisabled(String provider) {
-         
-        /******** Called when User off Gps *********/
-         
         Toast.makeText(getActivity(), "Gps turned off ", Toast.LENGTH_LONG).show();
     }
  
@@ -264,4 +258,3 @@ public class Main extends Fragment implements LocationListener{
 	}
 
 }
-

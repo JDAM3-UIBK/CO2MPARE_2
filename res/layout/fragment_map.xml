@@ -8,5 +8,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.co2mpare.MainActivity$PlaceholderFragment" >
+    
+    <fragment
+        android:id="@+id/gmap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    
 
 </RelativeLayout>

@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/cbdisablebike"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/saved"
         android:layout_marginTop="11dp"
         android:ems="10"
         android:hint="Average fuel consumption /100km"
@@ -84,7 +84,7 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/saved"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView3"

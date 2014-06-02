@@ -1,11 +1,6 @@
 package code;
+import java.text.NumberFormat;
 import java.util.ArrayList;
-  
-
-
-import com.co2mpare.R;
-  
-
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.co2mpare.R;
   
 public class ListAdapter extends BaseAdapter {
     private static ArrayList<Route> searchArrayList;
@@ -51,7 +48,13 @@ public class ListAdapter extends BaseAdapter {
             holder.txtco2 = (TextView) convertView.findViewById(R.id.co2cons);
             holder.txttime = (TextView) convertView.findViewById(R.id.time);
             holder.txtdistance = (TextView) convertView.findViewById(R.id.distance);
-         
+            
+            holder.txtvehicle.setTextSize(13 * convertView.getResources().getDisplayMetrics().density);
+            holder.txtmoney.setTextSize(6 * convertView.getResources().getDisplayMetrics().density);
+            holder.txtco2.setTextSize(6 * convertView.getResources().getDisplayMetrics().density);
+            holder.txttime.setTextSize(6 * convertView.getResources().getDisplayMetrics().density);
+            holder.txtdistance.setTextSize(6 * convertView.getResources().getDisplayMetrics().density);
+            
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -59,21 +62,28 @@ public class ListAdapter extends BaseAdapter {
         
         double co2car=settings.getCO2();
         double verbrauch=settings.getVerbrauch();
-        double co2pte=0.0;
+      
+        
+        NumberFormat n=NumberFormat.getInstance();
+       
+        n.setMaximumFractionDigits(4);
+        
+        
+        
         
         if(searchArrayList.get(position).getType().equals("driving")){
         	holder.txtvehicle.setText("Car");
         	holder.txtvehicle.setTextColor(Color.RED);
-        	holder.txtco2.setText(Math.round(((((searchArrayList.get(position).getLength()/1000)*co2car/1000))*100)/100.00)+" kg CO2");
-        	holder.txtmoney.setText(Math.round(((searchArrayList.get(position).getLength()/1000)*(verbrauch/100*1.4))*100)/100.00+" EUR");
+        	holder.txtco2.setText(n.format((((((searchArrayList.get(position).getLength()/1000)*co2car/1000))*100)/100.00))+" kg CO2");
+        	holder.txtmoney.setText(n.format((((searchArrayList.get(position).getLength()/1000)*(verbrauch/100*1.4))*100)/100.00)+" EUR");
         }else if(searchArrayList.get(position).getType().equals("PTE")){
         	holder.txtvehicle.setText("Public");
-        	holder.txtco2.setText(Math.round((((searchArrayList.get(position).getLength()/1000)*co2pte/1000)*100)/100.00)+" kg CO2");
-        	holder.txtmoney.setText(1.80+" EUR");
+        	holder.txtco2.setText(n.format(searchArrayList.get(position).getCO2())+" kg CO2");
+        	holder.txtmoney.setText((Math.round(searchArrayList.get(position).getCosts()*100)/100.00)+" EUR");
         }else if(searchArrayList.get(position).getType().equals("bicycling")){
         	holder.txtvehicle.setText("Bike");
         	holder.txtvehicle.setTextColor(Color.rgb(0, 162, 4));
-        	holder.txtco2.setText(0.0+" kg CO2");
+        	holder.txtco2.setText("0,0"+" kg CO2");
         	holder.txtmoney.setText(0+" EUR");
         }else{
         	holder.txtvehicle.setText(searchArrayList.get(position).getType());

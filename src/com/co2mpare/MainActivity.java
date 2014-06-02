@@ -3,12 +3,11 @@ package com.co2mpare;
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import code.Communicator;
 import code.LatLng;
+import code.SettingsObject;
 
 import com.co2mpare.fragments.Chart;
 import com.co2mpare.fragments.Compare;
@@ -24,7 +24,7 @@ import com.co2mpare.fragments.Main;
 import com.co2mpare.fragments.Map;
 
 
-public class MainActivity extends ActionBarActivity implements Communicator{
+public class MainActivity extends android.support.v4.app.FragmentActivity implements Communicator{
 
 	
 	/**
@@ -39,19 +39,32 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 	boolean enabled=true;
 	public static String[] fromto=new String[2];
 	public static LatLng loc;
-	
+	static MainActivity activityInstance;
+	public static String username;
+	SettingsObject settings=SettingsObject.getInstance();
+	public static FragmentManager fm;
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-
+	
 	@SuppressLint({ "NewApi", "Recycle" })
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+		    settings.setIsLoggedIn(true);
+		    settings.setUserName(extras.getString("username"));
+		}else{
+			settings.setIsLoggedIn(false);
+		}
+		
+		activityInstance=this;
+		
 		
 		
 		// Create the adapter that will return a fragment for each of the three
@@ -59,13 +72,14 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 		
-		
-		
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
 		mViewPager.setCurrentItem(1);
 		
+		
+				
 	}
 	
 	@Override
@@ -87,6 +101,11 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 		return fromto;
 	}
 
+	public static MainActivity getActivityInstance(){
+		  return activityInstance;
+	}
+
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -107,26 +126,25 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		
 
-		public SectionsPagerAdapter(FragmentManager fm) {
+		public SectionsPagerAdapter(android.support.v4.app.FragmentManager fm) {
 			super(fm);
 		}
 
 		@Override
-		public Fragment getItem(int position) {
+		public android.support.v4.app.Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class
-			// below).
-			
+						
 				switch(position){
-				case 0: return Chart.newInstance(position+1);
-				case 1: return Main.newInstance(position+1);
-				case 2: return Compare.newInstance(position+1);
-				case 3: return Map.newInstance(position+1);
+				case 0: return Chart.newInstance(position);
+				case 1: return Main.newInstance(position);
+				case 2: return Compare.newInstance(position);
+				case 3: return Map.newInstance(position);
 				}
 			
 			return null;
 		}
 
+		
 		
 		@Override
 		public int getCount() {
@@ -145,7 +163,7 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 			case 2:
 				return getString(R.string.title_section3).toUpperCase(l);
 			case 3:
-				return getString(R.string.title_section3).toUpperCase(l);
+				return getString(R.string.title_section4).toUpperCase(l);
 			}
 			return null;
 		}
@@ -196,5 +214,6 @@ public class MainActivity extends ActionBarActivity implements Communicator{
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -1,34 +1,18 @@
 package com.co2mpare;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import code.Cars;
-import code.SettingsObject;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,23 +30,24 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
+import code.Cars;
+import code.SettingsObject;
 
 public class SettingsActivity extends Activity {
 	
 	
 	List<Cars> listofallcars=new ArrayList<Cars>();
 	Button savebtn;
-	CheckBox disablecar,disablebike,disablepublic;
+	CheckBox disablecar;
 	Spinner predefined;
 	EditText fuel,co2,home;
 	SettingsObject settings=SettingsObject.getInstance();
-	TextView prefc, preco;
+	TextView prefc, preco, tw2,tw3,tw4,tw5,tw6,tw7,tw8;
 	
-	boolean dcar=false,dbike=false,dpublic=false;
+	boolean dcar=false,dbike=false,dpublic=false,owncar=false;
 	String fuelconsumption,co2emission;
 	Double fc,co;
-	int errorcounter=0;
+	int errorcounter=0,spinnerposition=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,32 +59,52 @@ public class SettingsActivity extends Activity {
 		
 		savebtn=(Button)findViewById(R.id.buttonsv);
 		disablecar=(CheckBox)findViewById(R.id.cbdisablecar);
-		disablepublic=(CheckBox)findViewById(R.id.cbdisablepublic);
-		disablebike=(CheckBox)findViewById(R.id.cbdisablebike);
+		
 		fuel=(EditText)findViewById(R.id.from);
 		co2=(EditText)findViewById(R.id.co2cons);
 		preco=(TextView)findViewById(R.id.cotv);
 		prefc=(TextView)findViewById(R.id.fctv);
 		home=(EditText)findViewById(R.id.homeadd);
+		tw2=(TextView)findViewById(R.id.saved);
+		tw3=(TextView)findViewById(R.id.textView3);
+		tw4=(TextView)findViewById(R.id.textView4);
+		tw5=(TextView)findViewById(R.id.textView5);
+		tw6=(TextView)findViewById(R.id.textView6);
+		tw7=(TextView)findViewById(R.id.textView7);
+		tw8=(TextView)findViewById(R.id.textView8);
+		predefined=(Spinner)findViewById(R.id.spinner1);
+		
+		disablecar.setTextSize(7 * getResources().getDisplayMetrics().density);
+		fuel.setTextSize(7 * getResources().getDisplayMetrics().density);
+		co2.setTextSize(7 * getResources().getDisplayMetrics().density);
+		preco.setTextSize(7 * getResources().getDisplayMetrics().density);
+		prefc.setTextSize(7 * getResources().getDisplayMetrics().density);
+		home.setTextSize(7 * getResources().getDisplayMetrics().density);
+		tw2.setTextSize(9 * getResources().getDisplayMetrics().density);
+		tw3.setTextSize(9 * getResources().getDisplayMetrics().density);
+		tw4.setTextSize(9 * getResources().getDisplayMetrics().density);
+		savebtn.setTextSize(12 * getResources().getDisplayMetrics().density);
+		tw5.setTextSize(7 * getResources().getDisplayMetrics().density);
+		tw6.setTextSize(7 * getResources().getDisplayMetrics().density);
+		tw7.setTextSize(7 * getResources().getDisplayMetrics().density);
+		tw8.setTextSize(7 * getResources().getDisplayMetrics().density);
+		
 		
 		
 		//Settings aus gespeichertem File wieder herstellen
 		
 		settings.retrieveFromStorage(getThisContext());
-				
-	    fuel.setText(settings.getVerbrauch()+"");
-		co2.setText(settings.getCO2()+"");
+		if(settings.getOwnCar()){
+			fuel.setText(settings.getVerbrauch()+"");
+			co2.setText(settings.getCO2()+"");
+		}
+			    
 		home.setText(settings.getMyHome());
 			
-		if(settings.isBikedisabled()){
-			disablebike.setChecked(true);
-		}
+		
 		if(settings.isCardisabled()){
 			disablecar.setChecked(true);
 		}
-		if(settings.isPublicdisabled()){
-			disablepublic.setChecked(true);
-		}	
 		
 		savebtn.setOnClickListener(new OnClickListener(){
 
@@ -109,35 +114,34 @@ public class SettingsActivity extends Activity {
 					dcar=true;
 					errorcounter++;
 				}
-				if(disablepublic.isChecked()){
-					dpublic=true;
-					errorcounter++;
-				}
-				if(disablebike.isChecked()){
-					
-					dbike=true;
-					errorcounter++;
-				}
-				Log.e("Hier",""+disablebike.isChecked());
-				if(!fuel.getText().toString().equals("")){
+				
+				
+				if((!fuel.getText().toString().equals("0.0"))&&!fuel.getText().toString().equals("")){
 					fc=Double.valueOf(fuel.getText().toString());
+					owncar=true;
 				}else{
 					fc=Double.valueOf(prefc.getText().toString());
+					owncar=false;
+					spinnerposition=predefined.getSelectedItemPosition();
 				}
-				if(!co2.getText().toString().equals("")){
+				if((!co2.getText().toString().equals("0.0"))&&!co2.getText().toString().equals("")){
 					co=Double.valueOf(co2.getText().toString());
+					owncar=true;
 				}else{
 					co=Double.valueOf(preco.getText().toString());
+					owncar=false;
+					spinnerposition=predefined.getSelectedItemPosition();
 				}
+				
 				
 				
 				if(errorcounter>=3){
 					Toast.makeText(v.getContext(), "There is an error; please check the values.", Toast.LENGTH_SHORT).show();
 				}else{
 					
-					settings.setBikedisabled(disablebike.isChecked());
+					
 					settings.setCardisabled(disablecar.isChecked());
-					settings.setPublicdisabled(disablepublic.isChecked());
+					
 					settings.setCO2(co);
 					settings.setVerbrauch(fc);
 					settings.setMyHome(home.getText().toString());
@@ -146,10 +150,10 @@ public class SettingsActivity extends Activity {
 					
 					//Einstellungen in Datei schreiben
 					
-					String toWrite=""+disablebike.isChecked()+";"+disablecar.isChecked()+";"+disablepublic.isChecked()+";"+co+";"+fc+";"+home.getText()+";";
+					String toWrite=""+disablecar.isChecked()+";"+co+";"+fc+";"+home.getText()+";"+owncar+";"+spinnerposition+";";
 					
 					settings.writeToFile(getThisContext(),toWrite);
-			        
+			        Log.e("ToWrite",toWrite);
 				    startActivity(intent);
 				}
 					
@@ -173,6 +177,12 @@ public class SettingsActivity extends Activity {
 		}
 		
 		addItemsOnSpinner();
+		if(settings.getOwnCar()){
+			predefined.setSelection(0);
+		}else{
+			predefined.setSelection(settings.getSpinnerPosition());
+		}
+		
 		
 	}
 	
@@ -182,13 +192,14 @@ public class SettingsActivity extends Activity {
 	
 	public void addItemsOnSpinner() {
 		 
-		predefined=(Spinner)findViewById(R.id.spinner1);
+		
 		
 		//Formatierung für den Spinner festlegen, indem eine ArrayList mit Strings angelegt wird. Die Indexierung bleibt für die Fahrzeuge gleich, damit man mit Position
 		//direkt auf die List zugreifen kann
 		
 		
 		List<String> test=new ArrayList<String>();
+		test.add("Your own car");
 		for(Cars tmp:listofallcars){
 			test.add(tmp.getMfr()+" "+tmp.getModel()+", FC: "+tmp.getFc());
 		}			
@@ -225,7 +236,7 @@ public class SettingsActivity extends Activity {
 		BufferedReader br = new BufferedReader(new InputStreamReader(this.getAssets().open("fuelconsumption.txt")));
 	    try {
 	       
-	        String line = br.readLine();
+	    	String line = br.readLine();
 
 	        while (line != null) {
 	            String[] tmp=line.split("\t");

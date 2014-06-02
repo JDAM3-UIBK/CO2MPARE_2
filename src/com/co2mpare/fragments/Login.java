@@ -3,17 +3,15 @@ package com.co2mpare.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import code.Controller;
 
 import com.co2mpare.MainActivity;
 import com.co2mpare.R;
@@ -24,6 +22,9 @@ public class Login extends Activity{
 	EditText user,pw;
 	String userStr="",pwStr="";
 	TextView guest, register;
+	Controller controller=Controller.getInstance();
+	CheckBox remember;
+	public static Login activityInstance;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +40,21 @@ public class Login extends Activity{
        pw=(EditText)findViewById(R.id.PasswordTF);
        guest=(TextView)findViewById(R.id.guestBTN);
        register=(TextView)findViewById(R.id.register);
+       remember=(CheckBox)findViewById(R.id.remember);
        
        /**
         * 
         * LOGIN as registered USER
         * 
         */
+       
+       activityInstance=this;
+       
+       if(controller.getRememberMe()){
+    	   remember.setChecked(true);
+    	   user.setText(controller.getSavedUsernameAndPassword()[0]);
+    	   pw.setText(controller.getSavedUsernameAndPassword()[1]);
+       }
        
        loginbtn.setOnClickListener(new OnClickListener(){
      
@@ -57,9 +67,22 @@ public class Login extends Activity{
 			}else{
 				userStr=user.getText().toString();
 				pwStr=pw.getText().toString();	
-				Intent intent=new Intent(v.getContext(), MainActivity.class);
-				v.getContext().startActivity(intent);
-				Log.e("User:",userStr);
+				if(!(controller.isUserRegistered(user.getText().toString(), pw.getText().toString()))){
+					Toast toast=new Toast(v.getContext());
+					toast.makeText(v.getContext(),"Wrong username or password or user is not registered yet.",Toast.LENGTH_LONG).show();
+					pw.setText("");
+				}else{
+					if(remember.isChecked()){
+						controller.setRememberMe(true,userStr,pwStr);
+					}else{
+						controller.setRememberMe(false,"","");
+					}
+					Intent intent=new Intent(v.getContext(), MainActivity.class);
+					intent.putExtra("username", userStr);
+					v.getContext().startActivity(intent);
+				}
+				
+			
 			}
 						
 		}
@@ -97,7 +120,7 @@ public class Login extends Activity{
    					toast.makeText(v.getContext(),"Just enter your desired username and password above.",Toast.LENGTH_LONG).show();
    				}else{
    					//New registration
-   					
+   					controller.registerUser(user.getText().toString(), pw.getText().toString());
    					Toast toast=new Toast(v.getContext());
    					toast.makeText(v.getContext(),"Registration successfully completed.",Toast.LENGTH_LONG).show();
    					Intent intent=new Intent(v.getContext(), MainActivity.class);

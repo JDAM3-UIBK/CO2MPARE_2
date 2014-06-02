@@ -5,21 +5,20 @@ package code;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.LinkedList;
 
-import android.app.Activity;
+import com.co2mpare.MainActivity;
+import com.co2mpare.fragments.Login;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -31,13 +30,16 @@ public class SettingsObject {
 	
 	
 	boolean cardisabled;
-	boolean publicdisabled;
-	boolean bikedisabled;
+	boolean remember;
+	boolean owncar;
 	double verbrauch;
 	double co2;
 	static SettingsObject settings;
 	String myhome;
 	LinkedList<Route> favouriteroutes;
+	int spinnerposition;
+	String username,pw;
+	boolean isLoggedIn;
 	
 	public static SettingsObject getInstance(){
 		if(settings==null){
@@ -49,8 +51,34 @@ public class SettingsObject {
 	
 	public void addFavouriteRoute(Route route, Context context){
 		favouriteroutes.add(route);
-		Log.e("Size of FavRoutes:",""+favouriteroutes.size());
+		
 		writeRoutesToFile(context);
+	}
+	
+	public boolean getRememberMe(){
+		return this.remember;
+	}
+	
+	public void setRememberMe(boolean remember){
+		this.remember=remember;
+	}
+	
+	public String getUserName(){
+		return username;
+	}
+	
+	public void setUserName(String username){
+		this.username=username;
+	}
+	
+	
+	
+	public void setIsLoggedIn(boolean loggedin){
+		this.isLoggedIn=loggedin;
+	}
+	
+	public boolean isLoggedIn(){
+		return isLoggedIn;
 	}
 	
 	public int getSizeOfFavRoutes(){
@@ -74,6 +102,59 @@ public class SettingsObject {
 	public String getVehicleOfFavRoutes(int i){
 		return favouriteroutes.get(i).getType();
 		
+	}
+	
+	public boolean getOwnCar(){
+		return owncar;
+	}
+	
+	public void setOwnCar(boolean owncar){
+		this.owncar=owncar;
+	}
+	
+	public void setSpinnerPosition(int spinnerposition){
+		this.spinnerposition=spinnerposition;
+	}
+	
+	public int getSpinnerPosition(){
+		return spinnerposition;
+	}
+	
+	public void saveUsernameAndPassword(boolean save,String usr, String pw){
+		String path = Login.activityInstance.getFilesDir()+"";
+		String data=save+";"+usr+";"+pw;
+		
+		path += "/login.txt";
+		OutputStream out;
+		
+		try {
+			out = new BufferedOutputStream(new FileOutputStream(path,false));
+			out.write(data.getBytes());
+			out.flush();
+			out.close();
+			} catch (FileNotFoundException e) {
+			    e.printStackTrace();
+			} catch (IOException e) {
+			    e.printStackTrace();
+			}
+	}
+	
+	public String getSavedUsernameAndPassword(){
+		String input="";
+		
+	    try {
+	        File file = new File(Login.activityInstance.getFilesDir(),"login.txt");
+	        if(file.exists() && !file.isDirectory()){
+	        	BufferedReader br = new BufferedReader(new FileReader(file));  
+		        input=br.readLine();
+		        br.close();
+	        }
+	        
+	    }catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    
+		return input;
 	}
 	
 	public void retrieveFromStorage(Context context){
@@ -115,25 +196,29 @@ public class SettingsObject {
 	    if(!input.equals("")){
 			
 			String[] parts=input.split(";");
+			
 			if(parts[0].equals("true")){
-				settings.setBikedisabled(true);
-			}else{
-				settings.setBikedisabled(false);
-			}
-			if(parts[1].equals("true")){
 				settings.setCardisabled(true);
 			}else{
 				settings.setCardisabled(false);
 			}
-			if(parts[2].equals("true")){
-				settings.setPublicdisabled(true);
+			
+			
+			setCO2(Double.valueOf(parts[1]));
+			setVerbrauch(Double.valueOf(parts[2]));
+			setMyHome(parts[3]);
+			if(parts[4].equals("true")){
+				settings.setOwnCar(true);
 			}else{
-				settings.setPublicdisabled(false);
+				settings.setOwnCar(false);
+			}
+			if(parts[5].equals(null)){
+				setSpinnerPosition(0);
+			}else{
+				setSpinnerPosition(Integer.valueOf(parts[5]));
 			}
 			
-			setCO2(Double.valueOf(parts[3]));
-			setVerbrauch(Double.valueOf(parts[4]));
-			setMyHome(parts[5]);
+			
 	    }
 	}
 	
@@ -207,33 +292,6 @@ public class SettingsObject {
 		this.cardisabled = cardisabled;
 	}
 
-	/**
-	 * @return the publicdisabled
-	 */
-	public boolean isPublicdisabled() {
-		return publicdisabled;
-	}
-
-	/**
-	 * @param publicdisabled the publicdisabled to set
-	 */
-	public void setPublicdisabled(boolean publicdisabled) {
-		this.publicdisabled = publicdisabled;
-	}
-
-	/**
-	 * @return the bikedisabled
-	 */
-	public boolean isBikedisabled() {
-		return bikedisabled;
-	}
-
-	/**
-	 * @param bikedisabled the bikedisabled to set
-	 */
-	public void setBikedisabled(boolean bikedisabled) {
-		this.bikedisabled = bikedisabled;
-	}
 
 	/**
 	 * @return the verbrauch

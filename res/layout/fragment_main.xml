@@ -58,7 +58,7 @@
         android:src="@drawable/home" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/weatherimage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/relativeLayout1"
@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/to"
         android:layout_marginTop="50dp"
-        android:layout_toRightOf="@+id/imageView3"
+        android:layout_toRightOf="@+id/weatherimage"
         android:src="@drawable/favorites" />
 
     <ImageView
